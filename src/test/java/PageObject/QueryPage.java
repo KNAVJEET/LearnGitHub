@@ -35,6 +35,10 @@ public class QueryPage {
 	
 	By button_warningok=By.xpath("//button[@title='OK']");
 	
+	By viewDrodown=By.xpath("//div[contains(@class,'ViewPopup_viewDv')]");
+	
+	By querypage_costpopup=By.xpath("//div[@id='CV4_TransAlertMessageWithDoNotShow']");
+	
 	//WebElement submitQuery=driver.findElement(button_submitquery);
 	
 	
@@ -95,11 +99,11 @@ public class QueryPage {
 		
 		int counter1=counter+1;
 		
-		System.out.println("counter" + counter1);
+		System.out.println("Query Number => " + counter1);
 		
 		try
 		{
-		WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(60));
+		WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(120));
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//img[@title='Corsearch FOCUS'])["+counter1+"]")));
 		
 		System.out.println("Query Processed Successfully");
@@ -183,6 +187,50 @@ public class QueryPage {
 			System.out.println("View Button is enabled");
 			
 			driver.findElement(By.xpath("(//ul[contains(@class,'Result_ulRes')])[1]//span[@title='View']")).click();
+		}
+		else
+		{
+			System.out.println("View Button is not enabled");
+		}
+	}
+	
+	
+	public void clickDownArrowSelectView(String view)
+	{
+       
+		List<WebElement> views=driver.findElements(By.xpath("(//span[contains(@class,'Result_displayBlock')]//img)[1]"));
+		
+		if(views.size()>0)
+		{
+			System.out.println("View Button is enabled");
+			
+			driver.findElement(By.xpath("(//span[contains(@class,'Result_displayBlock')]//img)[1]")).click();
+			
+			CommonFunction.explicitWait(viewDrodown, 60);
+			
+			List<WebElement> viewDropDown=driver.findElements(By.xpath("//ul[contains(@class,'ViewPopup_ulLst')]//li"));
+			
+			System.out.println(viewDropDown.size());
+			
+			for(int i=1;i<=viewDropDown.size();i++)
+			{
+				String viewName=driver.findElement(By.xpath("//ul[contains(@class,'ViewPopup_ulLst')]//li["+i+"]//span[2]")).getText();
+				
+				System.out.println(viewName);
+				
+				if(viewName.equalsIgnoreCase(view))
+				{
+					driver.findElement(By.xpath("//ul[contains(@class,'ViewPopup_ulLst')]//li["+i+"]")).click();
+					
+					break;
+				}
+			}
+			
+			
+			CommonFunction.explicitWait(querypage_costpopup, 60);
+			
+			driver.findElement(By.xpath("//input[@id='CV4_Yes_TransAlertBox']")).click();
+			
 		}
 		else
 		{
